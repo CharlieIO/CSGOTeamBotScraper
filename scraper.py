@@ -4,6 +4,7 @@ import urllib2
 import re
 import psycopg2
 import urlparse
+import datetime
 from bs4 import BeautifulSoup
 
 urlparse.uses_netloc.append("postgres")
@@ -293,5 +294,5 @@ def statScrape(teamlink):
            otherstats[4]  # win, draw, loss
     # other stats are maps played, total kills, total deaths, rounds played, K/D ratio
 
-
-auto_scrape()
+if datetime.datetime.today().weekday() == 0:
+    auto_scrape()
