@@ -28,15 +28,16 @@ def auto_scrape():
             try:
                 plink = playerlink[player]  # set a variable for their link
                 p1, p2, p3, p4 = otherPlayers(plink)  # set variables for their teammates
-                tcount += 1  # increment teams added
                 pname, age, team, k, hsp, d, rating, u1, u2, u3, u4 = pStats(
                     plink)  # get player stats and teammates (u is unused variables)
                 if tname == team:  # if the players are on the correct team, update DB
                     team_database_update(tname, p1, p2, p3, p4, player, win, draw, loss, rounds, tlink)
+                    tcount += 1  # increment teams added
                     print tname + ' has been modified. \n' + str(tcount) + ' teams modified.'
                 else:
                     team_database_update_nolink(team, p1, p2, p3, p4,
                                                 player)  # if the team is missing a link, update DB
+                    tcount += 1  # increment teams added
                     print team + ' has been modified. \n' + str(tcount) + ' teams modified.'
                 player_database_update(player, pname, age, team, k, d, hsp, rating,
                                        plink)  # regardless, update the player DB
@@ -256,12 +257,11 @@ def team_database_update_nolink(tname, p1, p2, p3, p4, p5):
     cur = conn.cursor()
     cur.execute("SELECT TEAM_NAME FROM csgo_teams")
     teamnames = cur.fetchall()
-    tname = tname.encode('latin1')
     if (tname,) not in teamnames:
         cur.execute(
             "INSERT INTO CSGO_TEAMS (TEAM_NAME, PLAYER1, PLAYER2, PLAYER3, PLAYER4, PLAYER5) VALUES (%s, %s, %s, %s, %s, %s)",
             (tname, p1, p2, p3, p4, p5))
-        print '\nNew Team Added Successfully'
+        print '\nNew Team (Incomplete) Added Successfully'
     else:
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER1=(%s) WHERE TEAM_NAME= (%s)", (p1, tname))
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER2=(%s) WHERE TEAM_NAME= (%s)", (p2, tname))
@@ -293,6 +293,19 @@ def statScrape(teamlink):
     return windrawloss[0], windrawloss[1], windrawloss[2], otherstats[0], otherstats[1], otherstats[2], otherstats[3], \
            otherstats[4]  # win, draw, loss
     # other stats are maps played, total kills, total deaths, rounds played, K/D ratio
+
+def info():
+    conn = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM csgo_teams WHERE TEAM_NAME='fnatic'")
+    teamnames= cur.fetchall()
+    print teamnames
 
 if datetime.datetime.today().weekday() == 0:
     auto_scrape()
