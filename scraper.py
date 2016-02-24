@@ -8,7 +8,7 @@ import datetime
 from bs4 import BeautifulSoup
 
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
+url = urlparse.urlparse(os.environ["MORPH_DATABASE_URL"])
 
 
 def auto_scrape():
@@ -306,6 +306,7 @@ def info():
     cur.execute("SELECT * FROM csgo_teams WHERE TEAM_NAME='fnatic'")
     teamnames= cur.fetchall()
     print teamnames
-auto_scrape()
 
-# if datetime.datetime.today().weekday() == 0:
+if datetime.datetime.today().weekday() == 0:
+    auto_scrape()
+
