@@ -8,7 +8,7 @@ import datetime
 from bs4 import BeautifulSoup
 
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["MORPH_DATABASE_URL"])
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 def auto_scrape():
@@ -257,10 +257,10 @@ def team_database_update_nolink(tname, p1, p2, p3, p4, p5):
     cur = conn.cursor()
     cur.execute("SELECT TEAM_NAME FROM csgo_teams")
     teamnames = cur.fetchall()
-    if (tname,) not in teamnames:
+    if (tname.encode('ascii', 'replace'),) not in teamnames:
         cur.execute(
             "INSERT INTO CSGO_TEAMS (TEAM_NAME, PLAYER1, PLAYER2, PLAYER3, PLAYER4, PLAYER5) VALUES (%s, %s, %s, %s, %s, %s)",
-            (tname, p1, p2, p3, p4, p5))
+            (tname.encode('ascii','replace'), p1, p2, p3, p4, p5))
         print '\nNew Team (Incomplete) Added Successfully'
     else:
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER1=(%s) WHERE TEAM_NAME= (%s)", (p1, tname))
@@ -306,6 +306,6 @@ def info():
     cur.execute("SELECT * FROM csgo_teams WHERE TEAM_NAME='fnatic'")
     teamnames= cur.fetchall()
     print teamnames
+auto_scrape()
 
-if datetime.datetime.today().weekday() == 0:
-    auto_scrape()
+# if datetime.datetime.today().weekday() == 0:
