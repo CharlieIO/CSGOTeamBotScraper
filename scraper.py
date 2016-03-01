@@ -33,16 +33,16 @@ def auto_scrape():
                 if tname == team:  # if the players are on the correct team, update DB
                     team_database_update(tname, p1, p2, p3, p4, player, win, draw, loss, rounds, tlink)
                     tcount += 1  # increment teams added
-                    print tname + ' has been modified. \n' + str(tcount) + ' teams modified.'
+                    print tname + ' has been modified. \n' + str(tcount) + ' teams modified.',
                 else:
                     team_database_update_nolink(team, p1, p2, p3, p4,
                                                 player)  # if the team is missing a link, update DB
                     tcount += 1  # increment teams added
-                    print team + ' has been modified. \n' + str(tcount) + ' teams modified.'
+                    print team + ' has been modified. \n' + str(tcount) + ' teams modified.',
                 player_database_update(player, pname, age, team, k, d, hsp, rating,
                                        plink)  # regardless, update the player DB
                 pcount += 1  # increment players added
-                print player + ' has been modified. \n' + str(pcount) + ' players modified. #' + team
+                print player + ' has been modified. \n' + str(pcount) + ' players modified. #' + team,
                 time.sleep(3)  # reduce load on HLTV servers
             except:
                 print 'error'
@@ -110,11 +110,11 @@ def pStats(plink):
         if name.get_text()[0] == "'":  # obtains the names of teammates
             names += [name.get_text().strip("'")]
     if len(names) == 4 and len(personalstats) == 4 and len(stats) == 10:  # full set of stats
-        print '\n', names
+        print '\n', names,
         return personalstats[0], personalstats[1], personalstats[3], stats[0], stats[1], stats[2], stats[9], names[0], \
                names[1], names[2], names[3]  # in order: name, age, team, kills, HSP, deaths, rating, 4 teammates
     elif len(personalstats) == 4 and len(stats) == 10:  # team doesn't have 5 members
-        print '\nIncomplete team or overloaded (>5 members)'
+        print '\nIncomplete team or overloaded (>5 members)',
         return personalstats[0], personalstats[1], personalstats[3], stats[0], stats[1], stats[2], stats[
             9], '', '', '', ''  # all but the teammates
     else:
@@ -171,7 +171,7 @@ def player_database_update(player, name, age, team, k, d, hsp, rating, link):
             cur.execute(
                 "INSERT INTO CSGO_PLAYERS (PLAYER, IRLNAME, AGE, TEAM, KILLS, DEATHS, HSP, RATING, LINK) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (player, name, age, team, k, d, hsp, rating, link))
-            print '\nNew Player Added Successfully'
+            print '\nNew Player Added Successfully',
         else:  # if already in the DB, just update each field
             cur.execute("UPDATE CSGO_PLAYERS SET IRLNAME=(%s) WHERE LINK=(%s)", (name, link))
             cur.execute("UPDATE CSGO_PLAYERS SET AGE=(%s) WHERE LINK=(%s)", (age, link))
@@ -181,7 +181,7 @@ def player_database_update(player, name, age, team, k, d, hsp, rating, link):
             cur.execute("UPDATE CSGO_PLAYERS SET HSP=(%s) WHERE LINK=(%s)", (hsp, link))
             cur.execute("UPDATE CSGO_PLAYERS SET RATING=(%s) WHERE LINK=(%s)", (rating, link))
             # cur.execute("UPDATE CSGO_PLAYERS SET LINK=(%s) WHERE LINK=(%s)", (link, link))
-            print '\nExisting Player Updated'
+            print '\nExisting Player Updated',
         conn.commit()
         conn.close()
     except:
@@ -219,7 +219,7 @@ def team_database_update(tname, p1, p2, p3, p4, p5, win, draw, loss, rounds, lin
         cur.execute(
             "INSERT INTO CSGO_TEAMS (TEAM_NAME, PLAYER1, PLAYER2, PLAYER3, PLAYER4, PLAYER5, WINS, DRAWS, LOSSES, ROUNDS, LINK) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (tname, p1, p2, p3, p4, p5, win, draw, loss, rounds, link))  # if not already in the DB, add them
-        print '\nNew Team Added Successfully'
+        print '\nNew Team Added Successfully',
     else:  # if else, update their info
         cur.execute("UPDATE CSGO_TEAMS SET TEAM_NAME=(%s) WHERE LINK= (%s)", (tname, link))
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER1=(%s) WHERE LINK= (%s)", (p1, link))
@@ -231,7 +231,7 @@ def team_database_update(tname, p1, p2, p3, p4, p5, win, draw, loss, rounds, lin
         cur.execute("UPDATE CSGO_TEAMS SET DRAWS=(%s) WHERE LINK= (%s)", (draw, link))
         cur.execute("UPDATE CSGO_TEAMS SET LOSSES=(%s) WHERE LINK= (%s)", (loss, link))
         cur.execute("UPDATE CSGO_TEAMS SET ROUNDS=(%s) WHERE LINK= (%s)", (rounds, link))
-        print '\nExisting Team Updated'
+        print '\nExisting Team Updated',
     conn.commit()
     conn.close()
 
@@ -261,7 +261,7 @@ def team_database_update_nolink(tname, p1, p2, p3, p4, p5):
         cur.execute(
             "INSERT INTO CSGO_TEAMS (TEAM_NAME, PLAYER1, PLAYER2, PLAYER3, PLAYER4, PLAYER5) VALUES (%s, %s, %s, %s, %s, %s)",
             (tname.encode('ascii','replace'), p1, p2, p3, p4, p5))
-        print '\nNew Team (Incomplete) Added Successfully'
+        print '\nNew Team (Incomplete) Added Successfully',
     else:
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER1=(%s) WHERE TEAM_NAME= (%s)", (p1, tname))
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER2=(%s) WHERE TEAM_NAME= (%s)", (p2, tname))
@@ -269,7 +269,7 @@ def team_database_update_nolink(tname, p1, p2, p3, p4, p5):
                     (p3, tname))  # functions identically to other update funcs
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER4=(%s) WHERE TEAM_NAME= (%s)", (p4, tname))
         cur.execute("UPDATE CSGO_TEAMS SET PLAYER5=(%s) WHERE TEAM_NAME= (%s)", (p5, tname))
-        print '\nExisting Team Updated'
+        print '\nExisting Team Updated',
     conn.commit()
     conn.close()
 
